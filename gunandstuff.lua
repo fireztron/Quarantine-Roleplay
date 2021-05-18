@@ -185,37 +185,39 @@ local function createHealthbar(player)
 		end)
 end
 
+spawn(function()
 for _,player in pairs(game:GetService('Players'):GetPlayers()) do
-if player ~= Players.LocalPlayer then
-		if player.Character then
-			player.Character:WaitForChild('Head') 
-			player.CharacterAdded:Connect(function(character)
-					player.Character:WaitForChild('Head') 
-					espPlayer(player)
-					createHealthbar(player)
-			end)
-			espPlayer(player)
-			createHealthbar(player)
-		end
+    if player ~= Players.LocalPlayer then
+        local char = player.Character or player.CharacterAdded:Wait()
+        if char and char:WaitForChild("Head") then
+            espPlayer(player)
+            createHealthbar(player)
+        end
+        player.CharacterAdded:Connect(function(character)
+            player.Character:WaitForChild('Head')
+            espPlayer(player)
+            createHealthbar(player)
+        end)
+    end
 end
-end
+end)
 
 game:GetService('Players').PlayerAdded:Connect(function(player)
 	if player then
 		--print(player, "has joined!")
 		local char = player.Character or player.CharacterAdded:Wait()
 		if char then
-			player.Character:WaitForChild('Head') 
+            player.Character:WaitForChild('Head') 
 			--print(char, "'s character has been found!")
-			player.CharacterAdded:Connect(function(character)
-					player.Character:WaitForChild('Head') 
-					player.Character:WaitForChild('Humanoid')  
-					espPlayer(player)
-					createHealthbar(player)
-			end)
-			espPlayer(player)
+            espPlayer(player)
 			createHealthbar(player)
 		end
+        player.CharacterAdded:Connect(function(character)
+            player.Character:WaitForChild('Head') 
+            player.Character:WaitForChild('Humanoid')  
+            espPlayer(player)
+            createHealthbar(player)
+        end)
 	end
 end)
 
@@ -247,8 +249,8 @@ FOVring.Color = Color3.fromRGB(255, 128, 128)
 FOVring.Position = workspace.CurrentCamera.ViewportSize/2
 
 local function teamCheck()
-    --return v.Team == game.Players.LocalPlayer.Team
-    return false
+    return v.Team == game.Players.LocalPlayer.Team
+    --return false
 end
 
 local function getClosest(cframe)
@@ -301,11 +303,11 @@ local LP = Players.LocalPlayer
 
 local function setCustomGunMod(gun)
     local gunSettings = require(gun.ConfigMods.CConfig)
-    gunSettings.BaseDamage = 1000
-    gunSettings.LimbDamage = 1000
-    gunSettings.ArmorDamage = 1000
-    gunSettings.HeadDamage = 1000
-    gunSettings.EShieldDamage = 1000
+    --gunSettings.BaseDamage = 100
+    --gunSettings.LimbDamage = 100
+    --gunSettings.ArmorDamage = 100
+    --gunSettings.HeadDamage = 100
+    --gunSettings.EShieldDamage = 100
 	
     gunSettings.SideKickMin = 0
     gunSettings.SideKickMax = 0
@@ -321,27 +323,22 @@ local function setCustomGunMod(gun)
     gunSettings.CamShakeMax = 0
     gunSettings.AimCanShakeMin = 0
     gunSettings.AimCamShakeMax = 0
-	
-    gunSettings.TracerLifetime = 1000
-    gunSettings.BulletSpeed = math.huge
     gunSettings.Ammo = math.huge
-    gunSettings.AntiTK = false
-    gunSettings.TracerEnabled = false
-    gunSettings.Firerate = .00000000000000000000000000000001
-    gunSettings.ExplosiveEnabled = true
-    gunSettings.ExplosiveAmmo = math.huge
     print('yuh')
 end
 
+print("ok")
 
 local function getGun()
-    repeat
-    for i,v in pairs(workspace:GetDescendants()) do
-        if v.Name == "PICKUP" and LP.Character and LP.Character:FindFirstChild("Glock 17") then
-		fireclickdetector(v.ClickDetector)		
-	end
+    repeat wait(.5)
+    for i,v in pairs(workspace:GetChildren()) do
+        if v.Name == "PICKUP" and v["Glock 17"].Part.Transparency ~= 1 then
+        print("firing")
+		fireclickdetector(v.ClickDetector)
+        wait(5)
+        end
     end
-    until not LP.Character or not LP.Character:FindFirstChild("Glock 17")
+    until not LP.Character or LP.Character:FindFirstChild("Glock 17") or LP.Backpack:FindFirstChild("Glock 17")
 end
 
 local function onChildAdded(child)
@@ -361,3 +358,37 @@ LP.CharacterAdded:Connect(function(char)
     char.ChildAdded:Connect(onChildAdded)
     getGun()
 end)
+
+
+--[[
+local gun = game.Players.LocalPlayer.Character["Glock 17"]
+local gunSettings = require(gun.ConfigMods.CConfig)
+    --gunSettings.BaseDamage = 1000
+    --gunSettings.LimbDamage = 1000
+    --gunSettings.ArmorDamage = 1000
+    --gunSettings.HeadDamage = 1000
+    --gunSettings.EShieldDamage = 1000
+	
+    gunSettings.SideKickMin = 0
+    gunSettings.SideKickMax = 0
+    gunSettings.AimSideKickMin = 0
+    gunSettings.AimSideKickMax = 0
+    gunSettings.gunRecoilMin = 0
+    gunSettings.gunRecoilMax = 0
+    gunSettings.AimKickbackMin = 0
+    gunSettings.AimKickbackMax = 0
+    gunSettings.KickbackMin = 0
+    gunSettings.KickbackMax = 0
+    gunSettings.CamShakeMin = 0
+    gunSettings.CamShakeMax = 0
+    gunSettings.AimCanShakeMin = 0
+    gunSettings.AimCamShakeMax = 0
+    gunSettings.Firerate = .083333333
+
+    --gunSettings.BulletSpeed = math.huge
+    gunSettings.Ammo = math.huge
+    gunSettings.StoredAmmo = math.huge
+    gunSettings.AutoEnabled = true
+    gunSettings.CanSelectFire = true
+    --gunSettings.Firerate = .00000000000000000000000000000001
+--]]
