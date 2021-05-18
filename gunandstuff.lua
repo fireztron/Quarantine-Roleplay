@@ -247,8 +247,8 @@ FOVring.Color = Color3.fromRGB(255, 128, 128)
 FOVring.Position = workspace.CurrentCamera.ViewportSize/2
 
 local function teamCheck()
-    return v.Team == game.Players.LocalPlayer.Team
-    --return false
+    --return v.Team == game.Players.LocalPlayer.Team
+    return false
 end
 
 local function getClosest(cframe)
@@ -307,20 +307,20 @@ local function setCustomGunMod(gun)
     gunSettings.HeadDamage = 1000
     gunSettings.EShieldDamage = 1000
 	
-    gunSettings.SideKickMin = -3.5
-    gunSettings.SideKickMax = 3.5
-    gunSettings.AimSideKickMin = -2.5
-    gunSettings.AimSideKickMax = 2.5
+    gunSettings.SideKickMin = 0
+    gunSettings.SideKickMax = 0
+    gunSettings.AimSideKickMin = 0
+    gunSettings.AimSideKickMax = 0
     gunSettings.gunRecoilMin = 0
     gunSettings.gunRecoilMax = 0
-    gunSettings.AimKickbackMin = 3
-    gunSettings.AimKickbackMax = 5
+    gunSettings.AimKickbackMin = 0
+    gunSettings.AimKickbackMax = 0
     gunSettings.KickbackMin = 0
     gunSettings.KickbackMax = 0
     gunSettings.CamShakeMin = 0
     gunSettings.CamShakeMax = 0
-    gunSettings.AimCanShakeMin = 3
-    gunSettings.AimCamShakeMax = 4
+    gunSettings.AimCanShakeMin = 0
+    gunSettings.AimCamShakeMax = 0
 	
     gunSettings.TracerLifetime = 1000
     gunSettings.BulletSpeed = math.huge
@@ -335,11 +335,13 @@ end
 
 
 local function getGun()
+    repeat
     for i,v in pairs(workspace:GetDescendants()) do
-        if v.Name == "PICKUP" then
+        if v.Name == "PICKUP" and LP.Character and LP.Character:FindFirstChild("Glock 17") then
 		fireclickdetector(v.ClickDetector)		
 	end
     end
+    until not LP.Character or not LP.Character:FindFirstChild("Glock 17")
 end
 
 local function onChildAdded(child)
