@@ -8,6 +8,11 @@ local targetPlayer = ""
 
 local Targets = {
     "HumanoidRootPart",
+    "Torso",
+    "LeftArm",
+    "RightArm",
+    "LeftLeg",
+    "RightLeg"
     --[["LeftLowerArm",
     "LeftUpperArm",
     "LowerTorso",
@@ -80,7 +85,7 @@ ESP()
 
 local function WaitUntilCharacterLoaded(Char)
     for _,Part in pairs(Targets)do
-        Char:WaitForChild(Part)
+        Char:WaitForChild(Part, math.huge)
     end
 end
 
@@ -158,7 +163,7 @@ end
 
 local function createHealthbar(player)
 	--print("healthing " .. player.Name)
-	local hrp = player.Character:WaitForChild("HumanoidRootPart")
+	local hrp = player.Character:WaitForChild("HumanoidRootPart",math.huge)
 	board =Instance.new("BillboardGui", hrp) --//Creates the BillboardGui with HumanoidRootPart as the Parent
 	board.Name = "total"
 	board.Size = UDim2.new(1,0,1,0)
@@ -189,7 +194,7 @@ spawn(function()
 for _,player in pairs(game:GetService('Players'):GetPlayers()) do
     if player ~= Players.LocalPlayer then
         local char = player.Character or player.CharacterAdded:Wait()
-        if char and char:WaitForChild("Head") then
+        if char and char:WaitForChild("Head",math.huge) then
             espPlayer(player)
             createHealthbar(player)
         end
@@ -207,14 +212,14 @@ game:GetService('Players').PlayerAdded:Connect(function(player)
 		--print(player, "has joined!")
 		local char = player.Character or player.CharacterAdded:Wait()
 		if char then
-            player.Character:WaitForChild('Head') 
+            player.Character:WaitForChild('Head',math.huge) 
 			--print(char, "'s character has been found!")
             espPlayer(player)
 			createHealthbar(player)
 		end
         player.CharacterAdded:Connect(function(character)
-            player.Character:WaitForChild('Head') 
-            player.Character:WaitForChild('Humanoid')  
+            player.Character:WaitForChild('Head',math.huge) 
+            player.Character:WaitForChild('Humanoid',math.huge)  
             espPlayer(player)
             createHealthbar(player)
         end)
@@ -235,7 +240,7 @@ end)
 -- CREDITS TO PersonMon FOR AIMBOT SCRIPT
 
 local teamCheck = false
-local fov = 150
+local fov = 200
 local smoothing = 1
 
 local RunService = game:GetService("RunService")
@@ -303,66 +308,6 @@ local LP = Players.LocalPlayer
 
 local function setCustomGunMod(gun)
     local gunSettings = require(gun.ConfigMods.CConfig)
-    --gunSettings.BaseDamage = 100
-    --gunSettings.LimbDamage = 100
-    --gunSettings.ArmorDamage = 100
-    --gunSettings.HeadDamage = 100
-    --gunSettings.EShieldDamage = 100
-	
-    gunSettings.SideKickMin = 0
-    gunSettings.SideKickMax = 0
-    gunSettings.AimSideKickMin = 0
-    gunSettings.AimSideKickMax = 0
-    gunSettings.gunRecoilMin = 0
-    gunSettings.gunRecoilMax = 0
-    gunSettings.AimKickbackMin = 0
-    gunSettings.AimKickbackMax = 0
-    gunSettings.KickbackMin = 0
-    gunSettings.KickbackMax = 0
-    gunSettings.CamShakeMin = 0
-    gunSettings.CamShakeMax = 0
-    gunSettings.AimCanShakeMin = 0
-    gunSettings.AimCamShakeMax = 0
-    gunSettings.Ammo = math.huge
-    print('yuh')
-end
-
-print("ok")
-
-local function getGun()
-    repeat wait(.5)
-    for i,v in pairs(workspace:GetChildren()) do
-        if v.Name == "PICKUP" and v["Glock 17"].Part.Transparency ~= 1 then
-        print("firing")
-		fireclickdetector(v.ClickDetector)
-        wait(5)
-        end
-    end
-    until not LP.Character or LP.Character:FindFirstChild("Glock 17") or LP.Backpack:FindFirstChild("Glock 17")
-end
-
-local function onChildAdded(child)
-	if child.Name == "Glock 17" then
-		setCustomGunMod(char["Glock 17"])
-	end
-end
-
-local char = LP.Character or LP.CharacterAdded:Wait()
-char:WaitForChild("HumanoidRootPart")
-char.ChildAdded:Connect(onChildAdded)
-getGun()
-
-
-LP.CharacterAdded:Connect(function(char)
-    char:WaitForChild("HumanoidRootPart")
-    char.ChildAdded:Connect(onChildAdded)
-    getGun()
-end)
-
-
---[[
-local gun = game.Players.LocalPlayer.Character["Glock 17"]
-local gunSettings = require(gun.ConfigMods.CConfig)
     --gunSettings.BaseDamage = 1000
     --gunSettings.LimbDamage = 1000
     --gunSettings.ArmorDamage = 1000
@@ -383,7 +328,7 @@ local gunSettings = require(gun.ConfigMods.CConfig)
     gunSettings.CamShakeMax = 0
     gunSettings.AimCanShakeMin = 0
     gunSettings.AimCamShakeMax = 0
-    gunSettings.Firerate = .083333333
+    gunSettings.Firerate = .001
 
     --gunSettings.BulletSpeed = math.huge
     gunSettings.Ammo = math.huge
@@ -391,4 +336,39 @@ local gunSettings = require(gun.ConfigMods.CConfig)
     gunSettings.AutoEnabled = true
     gunSettings.CanSelectFire = true
     --gunSettings.Firerate = .00000000000000000000000000000001
---]]
+    print('yuh')
+end
+
+print("ok")
+
+local function getGun()
+    repeat wait(.5)
+    for i,v in pairs(workspace:GetChildren()) do
+        if v.Name == "PICKUP" and v["Glock 17"].Part.Transparency ~= 1 then
+        print("firing")
+		fireclickdetector(v.ClickDetector)
+        wait(5)
+        end
+    end
+    until not LP.Character or LP.Character:FindFirstChild("Glock 17") or LP.Backpack:FindFirstChild("Glock 17")
+end
+
+local function onChildAdded(child)
+	if child.Name == "Glock 17" then
+        print("ok")
+		setCustomGunMod(LP.Character["Glock 17"])
+	end
+end
+
+local char = LP.Character or LP.CharacterAdded:Wait()
+char:WaitForChild("HumanoidRootPart")
+char.ChildAdded:Connect(onChildAdded)
+print("getting gun")
+getGun()
+
+
+LP.CharacterAdded:Connect(function(char)
+    char:WaitForChild("HumanoidRootPart")
+    char.ChildAdded:Connect(onChildAdded)
+    getGun()
+end)
