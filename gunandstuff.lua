@@ -336,26 +336,26 @@ end
 
 local function getGun()
     for i,v in pairs(workspace:GetDescendants()) do
-        if 
-            v:IsA("ClickDetector") 
-            and v.Parent.Name ~= "ClickPart" --forgot what this is
-            and v.Parent.Name ~= "clothingPart" --so u dont wear clothes
-            and v.Parent.Name ~= "SurfaceUI" --forgot what this is
-            and v.Parent.Name ~= " " --forgot what this is
-            and v.Parent.Name ~= "Maintable" --stops from prompting gamepass
-        then
-            fireclickdetector(v)
-        end
+        if v.Name == "PICKUP" then
+		fireclickdetector(v.ClickDetector)		
+	end
     end
+end
+
+local function onChildAdded(child)
+	if child.Name == "Glock 17" then
+		setCustomGunMod(char["Glock 17"])
+	end
 end
 
 local char = LP.Character or LP.CharacterAdded:Wait()
 char:WaitForChild("HumanoidRootPart")
+char.ChildAdded:Connect(onChildAdded)
 getGun()
-setCustomGunMod(char:WaitForChild("Training M4A1"), math.huge)
+
 
 LP.CharacterAdded:Connect(function(char)
     char:WaitForChild("HumanoidRootPart")
+    char.ChildAdded:Connect(onChildAdded)
     getGun()
-    setCustomGunMod(char:WaitForChild("Training M4A1"), math.huge)
 end)
