@@ -3,16 +3,12 @@
 --// ESP PARTS
 
 local ScreenGui = Instance.new("ScreenGui",game:GetService('CoreGui'))
+ScreenGui.Name = "PLAYERCHAMS"
 local ESPLocation = Instance.new("Folder",ScreenGui)
 local targetPlayer = ""
 
 local Targets = {
     "HumanoidRootPart",
-    "Torso",
-    "LeftArm",
-    "RightArm",
-    "LeftLeg",
-    "RightLeg"
     --[["LeftLowerArm",
     "LeftUpperArm",
     "LowerTorso",
@@ -59,14 +55,15 @@ function espPart(part,player)
             end
 	    end)
 	end
+    return esp
 end
  
-function espPlayer(player)
+function espPartPlayer(player)
     if player.Character ~= nil then
         for _,part in pairs(player.Character:GetChildren())do
             if part:IsA("BasePart") and part.Name ~= "Head" and part.Name ~= "RightHand" and part.Name ~= "LeftHand" and part.Name ~= "LeftFoot" and part.Name ~= "RightFoot" then
                 --print(part)
-                espPart(part,player)
+                local esp = espPart(part,player)
             end
         end
     end
@@ -76,7 +73,7 @@ function ESP()
     ESPLocation:ClearAllChildren()
     for _,player in pairs(game:GetService('Players'):GetPlayers())do
         if player ~= game:GetService('Players').LocalPlayer then
-            espPlayer(player)
+            espPartPlayer(player)
         end
     end
 end
@@ -85,25 +82,24 @@ ESP()
 
 local function WaitUntilCharacterLoaded(Char)
     for _,Part in pairs(Targets)do
-        Char:WaitForChild(Part, math.huge)
+        Char:WaitForChild(Part)
     end
 end
 
 game:GetService('Players').PlayerAdded:Connect(function(Player)
     Player.CharacterAdded:Connect(function(Char)
         WaitUntilCharacterLoaded(Char)
-        espPlayer(Player)
+        espPartPlayer(Player)
     end)
 end)
 
 for _,Player in pairs(game:GetService('Players'):GetPlayers())do
-    if Player ~= game:GetService('Players').LocalPlayer then
-        Player.CharacterAdded:Connect(function(Char)
-            WaitUntilCharacterLoaded(Char)
-            espPlayer(Player)
-        end)
-    end
+    Player.CharacterAdded:Connect(function(Char)
+        WaitUntilCharacterLoaded(Char)
+        espPartPlayer(Player)
+    end)
 end
+
 
 --// ESP NAMES
 
@@ -163,7 +159,7 @@ end
 
 local function createHealthbar(player)
 	--print("healthing " .. player.Name)
-	local hrp = player.Character:WaitForChild("HumanoidRootPart",math.huge)
+	local hrp = player.Character:WaitForChild("HumanoidRootPart")
 	board =Instance.new("BillboardGui", hrp) --//Creates the BillboardGui with HumanoidRootPart as the Parent
 	board.Name = "total"
 	board.Size = UDim2.new(1,0,1,0)
@@ -194,7 +190,7 @@ spawn(function()
 for _,player in pairs(game:GetService('Players'):GetPlayers()) do
     if player ~= Players.LocalPlayer then
         local char = player.Character or player.CharacterAdded:Wait()
-        if char and char:WaitForChild("Head",math.huge) then
+        if char and char:FindFirstChild("Head") then
             espPlayer(player)
             createHealthbar(player)
         end
@@ -212,14 +208,14 @@ game:GetService('Players').PlayerAdded:Connect(function(player)
 		--print(player, "has joined!")
 		local char = player.Character or player.CharacterAdded:Wait()
 		if char then
-            player.Character:WaitForChild('Head',math.huge) 
+            player.Character:WaitForChild('Head') 
 			--print(char, "'s character has been found!")
             espPlayer(player)
 			createHealthbar(player)
 		end
         player.CharacterAdded:Connect(function(character)
-            player.Character:WaitForChild('Head',math.huge) 
-            player.Character:WaitForChild('Humanoid',math.huge)  
+            player.Character:WaitForChild('Head') 
+            player.Character:WaitForChild('Humanoid')  
             espPlayer(player)
             createHealthbar(player)
         end)
