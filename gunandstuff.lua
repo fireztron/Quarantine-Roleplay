@@ -195,7 +195,7 @@ for _,player in pairs(game:GetService('Players'):GetPlayers()) do
             createHealthbar(player)
         end
         player.CharacterAdded:Connect(function(character)
-            player.Character:WaitForChild('Head')
+            player.Character:WaitForChild('Head', math.huge)
             espPlayer(player)
             createHealthbar(player)
         end)
